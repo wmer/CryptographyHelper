@@ -9,17 +9,22 @@ using System.Text;
 namespace CryptographyHelper {
     public class Encryptor {
         public String Encrypt(String text, String key, String IniVector) {
-            ICryptoTransform encryptor = CreateEncryptor(key, IniVector);
+            var str = "";
 
-            using (MemoryStream mStream = new MemoryStream()) {
+            if (!string.IsNullOrEmpty(text)) {
+                ICryptoTransform encryptor = CreateEncryptor(key, IniVector);
+
+                using MemoryStream mStream = new MemoryStream();
                 using (CryptoStream encryp = new CryptoStream(mStream, encryptor, CryptoStreamMode.Write)) {
                     using (StreamWriter writer = new StreamWriter(encryp)) {
                         writer.Write(text);
                     }
                 }
 
-                return ConvertHelper.ArrayBytesToString(mStream.ToArray());
+                str = ConvertHelper.ArrayBytesToString(mStream.ToArray());
             }
+
+            return str;
         }
 
         private ICryptoTransform CreateEncryptor(String key, String iniVector) {
